@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+
+{% block index %}
+
+
+        <h2><div>{{ object.first_name }} {{ object.last_name }}</div></h2>
+        <div>username - {{ object.username }}</div>
+        <div>Дата регистрация - {{ object.date_joined }} </div>
+        <div><a class="btn btn-default" href="{% url 'user_edit' pk=object.id %}">Редактировать</a></div>
+
+
+{% endblock %}
+

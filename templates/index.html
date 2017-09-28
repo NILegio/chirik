@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block title %}
+
+     <div><a href="{% url 'index' %}">Чирик</a></div>
+
+{% endblock %}
+{% block index %}
+    {% if user.is_authenticated %}
+        Привет, {{ user.username }}<br>
+        <a href="{% url 'user' user.id %}"> Страница профиля</a><br>
+        <a href="{% url 'logout' %}">Выйти</a>
+    {% else %}
+        <ul>
+            <li><a href="{% url 'login' %}">Зайти на сайт</a></li>
+            <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
+        </ul>
+    {% endif %}
+{% endblock %}
+</body>
+</html>
