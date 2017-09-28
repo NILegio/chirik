@@ -125,8 +125,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 AUTH_USER_MODEL = 'aas.Character'
 
 LANGUAGE_CODE = 'ru-RU'  # для русской локали
 USE_I18N = True # интернационалицация по-умолчанию включена
+
+try:
+    from .local_settings import *
+except:
+    pass
