@@ -14,7 +14,7 @@ class MyUserChangeForm(UserChangeForm):
 
 class MyUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
-        label="Password",
+        label="Пароль",
         max_length=32,
         required=True,
         widget=forms.PasswordInput
