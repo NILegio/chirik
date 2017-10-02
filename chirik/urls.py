@@ -26,8 +26,8 @@ urlpatterns = [
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout' ),
     url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
-    url(r'^edit_user/(?P<username>\w+)$', UserEditView.as_view(), name = 'user_edit'),
-    url(r'^blog/$', BlogView.as_view(), name='blog')
+    url(r'^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name = 'user_edit'),
+    url(r'^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog')
 ]
 
 

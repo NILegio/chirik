@@ -4,9 +4,21 @@
 {% endblock %}
 
 {% block content %}
+
+    <ul>
+        {% for blog in blog_list %}
+            <li>
+                {{ blog }}
+            </li>
+        {% empty %}
+            <div>Вы еще ничего не написали и не на кого не подписаны</div>
+        {% endfor %}
+    </ul>
+    {% block sideblock %}
         <h2><div>{{ object.first_name }} {{ object.last_name }}</div></h2>
         <div>username - {{ object.username }}</div>
         <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
         <div><a class="btn btn-default" href="{% url 'user_edit' username=object.username %}">Редактировать</a></div>
+    {% endblock sideblock %}
 {% endblock %}
 

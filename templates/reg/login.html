@@ -1,8 +1,16 @@
 {% extends "index.html" %}
+{% load bootstrap3 %}
 {% block content %}
     <form action="" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Войти</button>
+    {% bootstrap_form form %}
+    {# {{ form.as_p }} #}
+    {% buttons %}
+        <button type="submit">
+        {% bootstrap_icon 'star' %} Войти</button>
+    {% endbuttons %}
     </form>
 {% endblock %}
+
+
+

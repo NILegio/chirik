@@ -63,3 +63,23 @@ class LoginView(FormView):
         self.user = form.get_user()
         login(self.request, self.user)
         return super(LoginView, self).form_valid(form)
+
+class BlogForm(FormView):
+
+    blog_area = forms.CharField(
+        label='',
+        widget=forms.Textarea
+    )
+
+
+class CommentForm(forms.Form):
+
+     parent_comment = forms.IntegerField(
+         widget=forms.HiddenInput,
+         required=False
+     )
+
+     comment_area = forms.CharField(
+        label='',
+        widget=forms.Textarea
+     )
