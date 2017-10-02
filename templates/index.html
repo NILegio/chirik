@@ -2,25 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    {% load bootstrap3 %}
+    <script src="{% bootstrap_jquery_url %}"></script>
+    {% bootstrap_javascript %}
+    {% bootstrap_css %}
+    {% block head %}
+    <title>Чирик</title>
+    {% endblock %}
 </head>
 <body>
-{% block title %}
 
-     <div><a href="{% url 'index' %}">Чирик</a></div>
+<div><a href="{% url 'index' %}">Чирик</a></div>
 
-{% endblock %}
-{% block index %}
-    {% if user.is_authenticated %}
-        Привет, {{ user.username }}<br>
-        <a href="{% url 'user' user.id %}"> Страница профиля</a><br>
-        <a href="{% url 'logout' %}">Выйти</a>
-    {% else %}
-        <ul>
-            <li><a href="{% url 'login' %}">Зайти на сайт</a></li>
-            <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
-        </ul>
-    {% endif %}
-{% endblock %}
+{% block content %}
+    {% block page %}
+    {% endblock page %}
+    {% block sideblock %}
+            {% if user.is_authenticated %}
+                Привет, {{ user.username }}<br>
+                <a href="{% url 'user' user.username %}"> Страница профиля</a><br>
+                <a href="{% url 'logout' %}">Выйти</a>
+            {% else %}
+                <ul>
+                <li><a href="{% url 'login' %}">Зайти на сайт</a></li>
+                <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
+            </ul>
+        {% endif %}
+    {% endblock sideblock %}
+    {% endblock %}
 </body>
 </html>

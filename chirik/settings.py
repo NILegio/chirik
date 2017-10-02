@@ -25,7 +25,7 @@ SECRET_KEY = 'qk5bmgx+*$&fxki=o5%c7#zo8-n+&^j1mm%g)ew&zqgogb84zl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wtelecom.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'aas.apps.AasConfig'
+    'aas.apps.AasConfig',
+    'bootstrap3'
 ]
 
 MIDDLEWARE = [
@@ -125,14 +126,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 AUTH_USER_MODEL = 'aas.Character'
 
 LANGUAGE_CODE = 'ru-RU'  # для русской локали
 USE_I18N = True # интернационалицация по-умолчанию включена
 
-try:
-    from .local_settings import *
-except:
-    pass
+#try:
+#    from .local_settings import *
+#except:
+#    pass

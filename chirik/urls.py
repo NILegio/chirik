@@ -13,9 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import url, include, handler404
 from django.contrib import admin
-from aas.views import IndexView, UserView, LogoutView, UserEditView
+from aas.views import IndexView, UserView, LogoutView, UserEditView, BlogView, e_handler404, e_handler500
 from aas.form import LoginView, RegView
 
 urlpatterns = [
@@ -25,6 +25,11 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout' ),
-    url(r'^(?P<pk>\d+)/$', UserView.as_view(), name='user'),
-    url(r'^edit_user/(?P<pk>\d+)$', UserEditView.as_view(), name = 'user_edit')
+    url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
+    url(r'^edit_user/(?P<username>\w+)$', UserEditView.as_view(), name = 'user_edit'),
+    url(r'^blog/$', BlogView.as_view(), name='blog')
 ]
+
+
+handler404 = e_handler404
+handler500 = e_handler500

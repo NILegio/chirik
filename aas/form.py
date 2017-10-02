@@ -45,7 +45,7 @@ def clean_username(self):
 
 
 class RegView(FormView):
-    template_name = 'registration.html'
+    template_name = 'reg/registration.html'
     form_class = MyUserCreationForm
     success_url = '/login/'
 
@@ -56,7 +56,7 @@ class RegView(FormView):
 
 class LoginView(FormView):
     form_class = AuthenticationForm
-    template_name = 'login.html'
+    template_name = 'reg/login.html'
     success_url = '/'
 
     def form_valid(self, form):

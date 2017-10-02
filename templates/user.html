@@ -1,13 +1,12 @@
 {% extends "index.html" %}
+{% block head %}
+    <title>{{ object.first_name }} {{ object.last_name }} (@{{ object.username }})|Чирик</title>
+{% endblock %}
 
-{% block index %}
-
-
+{% block content %}
         <h2><div>{{ object.first_name }} {{ object.last_name }}</div></h2>
         <div>username - {{ object.username }}</div>
-        <div>Дата регистрация - {{ object.date_joined }} </div>
-        <div><a class="btn btn-default" href="{% url 'user_edit' pk=object.id %}">Редактировать</a></div>
-
-
+        <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
+        <div><a class="btn btn-default" href="{% url 'user_edit' username=object.username %}">Редактировать</a></div>
 {% endblock %}
 
