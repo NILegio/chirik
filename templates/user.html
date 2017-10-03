@@ -5,21 +5,14 @@
 
 {% block content %}
 
-     <a href="{% url 'aas:blog' user.username %}"> Блог </a><br>
-    <ul>
-        {% for blog in blog_list %}
-            <li>
-                {{ blog }}
-            </li>
-        {% empty %}
-            <div>Вы еще ничего не написали и не на кого не подписаны</div>
-        {% endfor %}
-    </ul>
-    {% block sideblock %}
-        <h2><div>{{ object.first_name }} {{ object.last_name }}</div></h2>
+     <a href="{% url 'aas:blog' username=object.username %}"> Блог </a><br>
+     {% block sideblock %}
+        <h2>{{ object.first_name }} {{ object.last_name }}</h2>
         <div>username - {{ object.username }}</div>
         <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
+        {% if user.is_authenticated %}
         <div><a class="btn btn-default" href="{% url 'aas:user_edit' username=object.username %}">Редактировать</a></div>
-    {% endblock sideblock %}
+        {% endif %}
+     {% endblock sideblock %}
 {% endblock %}
 

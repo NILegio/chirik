@@ -1,12 +1,25 @@
-{% extends "index.html" %}
+{% extends "user.html" %}
+{% load bootstrap3 %}
 {% block content %}
+
     <ul>
         {% for blog in blog_list %}
             <li>
-                <a href="{% url 'aas:comments' user.username blog.id %}">{{ blog.text }}</a>
+                <a href="{% url 'aas:comments' blog.owner blog.id %}">{{ blog.text }}</a>
             </li>
         {% empty %}
             <div>Вы еще ничего не написали и не на кого не подписаны</div>
         {% endfor %}
+
     </ul>
+        {% if form %}
+        <form id="comment_form" action="{% url 'aas:add_articles' blog.owner %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">{% bootstrap_icon "comment" %}&nbsp;&nbsp;Написать</button>
+        {% endbuttons %}
+        </form>
+        {% endif %}
+
 {% endblock %}

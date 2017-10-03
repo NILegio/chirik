@@ -33,3 +33,19 @@
 
 </body>
 </html>
+
+форма для блога
+
+    {% if form %}
+        <h3 id="write_text"><a onclick="return show_form('write_text')">Написать текст</a></h3>
+        <form id="blog_form", action="{% url 'aas:add_articles' blog.id %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit", class="btn btn-primary">{% bootstrap_icon 'text' %}&nbsp;&nbsp; Написать</button>
+        {% endbuttons %}
+        </form>
+
+    {% endif %}
+
+форма для

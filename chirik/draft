@@ -18,3 +18,65 @@
             context['form']=self.comment_form
 
         return context
+
+
+
+class BlogView(TemplateView):
+    template_name = 'blog.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogView, self).get_context_data(**kwargs)
+        context.update(csrf(self.request))
+
+        char = get_object_or_404(Character, username=self.kwargs['username'])
+        context['blog_list'] = char.blog.all().order_by('pub_date')
+        return context
+
+
+class ArticlesView(TemplateView):
+    template_name = 'comments.html'
+    comment_form = CommentForm
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        blog = get_object_or_404(Blog, id=self.kwargs['id'])
+        context.update(csrf(self.request))
+        user = auth.get_user(self.request)
+        context['comments'] = blog.commentary.all().order_by('pub_date')
+        context['next'] = blog.get_absolute_url()
+        if user.is_authenticated:
+            context['form'] = self.comment_form
+
+        return context
+
+
+@login_required
+@require_http_methods
+def add_comments(request, blog_id):
+
+    form = CommentForm(request.POST)
+    blog = get_object_or_404(Blog, id=blog_id)
+
+    if form.is_valid():
+        comment = Commentary()
+        comment.blog = blog
+        comment.owner = auth.get_user(request)
+        comment.text = form.cleaned_data['comment_area']
+        comment.save()
+
+    return redirect(blog.get_absolute_url())
+
+@login_required
+@require_http_methods
+def add_articles(request, blog_id):
+
+    form = BlogForm(request.POST)
+
+    if form.is_valid():
+        blog = Blog()
+        blog.owner = auth.get_user(request)
+        blog.text = form.cleaned_data['comment_area']
+        blog.save()
+
+    return redirect(blog.get_absolute_url())

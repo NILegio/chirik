@@ -1,10 +1,9 @@
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth import login
 from django import forms
-from aas.models import Character
+from aas.models import Character, Blog
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -31,7 +30,7 @@ class MyUserCreationForm(UserCreationForm):
 
     class Meta():
         model = Character
-        fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
         help_texts = {'password': "Must be at least 8 characters."}
 
 
@@ -44,32 +43,19 @@ def clean_username(self):
     raise forms.ValidationError(self.error_messages['duplicate_username'])
 
 
-class RegView(FormView):
-    template_name = 'reg/registration.html'
-    form_class = MyUserCreationForm
-    success_url = '/login/'
-
-    def form_valid(self, form):
-        form.save()
-        return super(RegView, self).form_valid(form)
 
 
-class LoginView(FormView):
-    form_class = AuthenticationForm
-    template_name = 'reg/login.html'
-    success_url = '/'
+class BlogForm(forms.ModelForm):
 
-    def form_valid(self, form):
-        self.user = form.get_user()
-        login(self.request, self.user)
-        return super(LoginView, self).form_valid(form)
-
-class BlogForm(FormView):
-
-    blog_area = forms.CharField(
-        label='',
-        widget=forms.Textarea
+    parent = forms.IntegerField(
+        widget=forms.HiddenInput,
+        required=False
     )
+
+    class Meta:
+        model = Blog
+        fields = ['text']
+
 
 
 class CommentForm(forms.Form):

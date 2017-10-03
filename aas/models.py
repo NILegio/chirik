@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse
 # Create your models here.
 
 
 class Character(AbstractUser):
-#    email = models.EmailField(verbose_name='email address', max_length=50, unique=True)
     friends = models.ManyToManyField('self', related_name='friends', blank=True)
 
     class Meta:
@@ -14,6 +14,9 @@ class Character(AbstractUser):
 
     def __str__(self):
         return '{}'.format(self.username)
+
+    def get_absolute_url(self):
+        return reverse('aas:user', kwargs={'username': self.username})
 
 
 class HashtagList(models.Model):
@@ -41,11 +44,24 @@ class Blog(models.Model):
 
 
 class Commentary(models.Model):
+    path = ArrayField(models.IntegerField())
     blog = models.ForeignKey(Blog, related_name='commentary')
-    text = models.TextField(max_length=280)
+    content = models.TextField(max_length=280)
     pub_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(Character)
     dislikes = models.IntegerField(default=100)
 
     def __str__(self):
-        return '{} {}'.format(self.owner.username, self.pub_date)
+        return self.content[0:200]
+
+    def get_offset(self):
+        level = len(self.path) - 1
+        if level > 5:
+            level = 5
+        return level
+
+    def get_col(self):
+        level = len(self.path) - 1
+        if level > 5:
+            level = 5
+        return 12 - level
