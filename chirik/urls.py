@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include, handler404
 from django.contrib import admin
-from aas.views import IndexView, UserView, LogoutView, UserEditView, BlogView, e_handler404, e_handler500
+from aas.views import IndexView, UserView, LogoutView, UserEditView, BlogView
 from aas.form import LoginView, RegView
 
 urlpatterns = [
@@ -25,11 +25,13 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout' ),
-    url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
-    url(r'^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name = 'user_edit'),
-    url(r'^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog')
-]
+    url(r'^(?P<username>\w+)/', include ('aas.urls')),]
 
 
-handler404 = e_handler404
-handler500 = e_handler500
+#        url (r'^$', UserView.as_view(), name='user'),
+  #      url(r'^edit_user/$', UserEditView.as_view(), name = 'user_edit'),
+  #      url(r'^blog/$', BlogView.as_view(), name='blog')
+#        #url(r"blog/"),
+  #      ]))
+   # ]
+

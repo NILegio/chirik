@@ -21,7 +21,7 @@
     {% block sideblock %}
             {% if user.is_authenticated %}
                 Привет, {{ user.username }}<br>
-                <a href="{% url 'user' user.username %}"> Страница профиля</a><br>
+                <a href="{% url 'aas:user' user.username %}"> Страница профиля</a><br>
                 <a href="{% url 'logout' %}">Выйти</a>
             {% else %}
                 <ul>

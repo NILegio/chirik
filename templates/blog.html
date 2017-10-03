@@ -3,7 +3,7 @@
     <ul>
         {% for blog in blog_list %}
             <li>
-                {{ blog.text }}
+                <a href="{% url 'aas:comments' user.username blog.id %}">{{ blog.text }}</a>
             </li>
         {% empty %}
             <div>Вы еще ничего не написали и не на кого не подписаны</div>

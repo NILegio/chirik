@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.urls import reverse
 # Create your models here.
 
 
@@ -34,6 +35,9 @@ class Blog(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.owner.username, self.pub_date)
+
+    def get_absolute_url(self):
+        return reverse('aas:comments', kwargs={'username': self.owner.username, 'id':self.id})
 
 
 class Commentary(models.Model):

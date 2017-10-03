@@ -1,0 +1,20 @@
+    url(r'^(?P<username>\w+)/$', include ([
+        url (r'^$', UserView.as_view(), name='user'),
+        url(r'^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name = 'user_edit'),
+        url(r'^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog')
+        url(r"^(?P<username>\w+)/blog/"),
+
+]
+
+
+    def get_context_data(self, **kwargs):
+        blog = get_object_or_404(Blog, id=self.kwargs['id'])
+        context = super(ArticlesView, self).get_context_data(**kwargs)
+        context.update(csrf(self.request))
+        user = auth.get_user(self.request)
+        context['comments']=blog.commentary_set.all().order_by('pub_date')
+        context['next']=blog.get_absolute_url()
+        if user.is_authenticated:
+            context['form']=self.comment_form
+
+        return context

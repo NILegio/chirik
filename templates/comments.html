@@ -1,0 +1,15 @@
+{% extends 'user.html' %}
+
+{% block content %}
+    <article>
+    {{ blog.text }}<br>
+    <a href="{% url 'aas:user' blog.owner %}">{{ blog.owner }}</a>
+    </article>
+    <h3>Комментарии</h3>
+    {% for comment in comments %}
+
+
+    {% endfor %}
+
+
+{% endblock %}
