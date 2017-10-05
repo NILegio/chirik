@@ -5,12 +5,14 @@
 
 {% block content %}
 
-     <a href="{% url 'aas:blog' username=object.username %}"> Блог </a><br>
+    {% include 'blog.html' %}
+
+    {#  <a href="{% url 'aas:blog' username=object.username %}"> Блог </a><br> #}
      {% block sideblock %}
         <h2>{{ object.first_name }} {{ object.last_name }}</h2>
         <div>username - {{ object.username }}</div>
         <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user.username == object.username %}
         <div><a class="btn btn-default" href="{% url 'aas:user_edit' username=object.username %}">Редактировать</a></div>
         {% endif %}
      {% endblock sideblock %}

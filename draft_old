@@ -22,3 +22,16 @@ class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog
         fields = ['text']
+
+
+class ArticlesView(TemplateView):
+    template_name = 'comments.html'
+    comment_form = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ArticlesView, self).get_context_data(**kwargs)
+        blog = get_object_or_404(Blog, id=self.kwargs['id'])
+        context['blog'] = blog
+        context['blog_list'] = blog.commentary.all().order_by('pub_date')
+
+        return context

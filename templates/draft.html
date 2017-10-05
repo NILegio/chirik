@@ -1,51 +1,56 @@
-<head>
-    <meta charset="UTF-8">
-    {% load bootstrap3 %}
-    <script src="{% bootstrap_jquery_url %}"></script>
-    {% bootstrap_javascript %}
-    {% bootstrap_css %}
-    {% block head %}
-    <title>Чирик</title>
-    {% endblock %}
-</head>
-<body>
+черновик работающих комментариев с оффсетами
 
-
-<div><a href="{% url 'index' %}">Чирик</a></div>
+{% extends 'user.html' %}
+{% load bootstrap3 %}
+{% block head %}
+    <title>{{ blog.owner.first_name }} {{ blog.owner.last_name }} пишет: {{ blog.text }}|Чирик</title>
+{% endblock %}
 
 {% block content %}
-    {% block page %}
-    {% endblock page %}
-    {% block sideblock %}
-            {% if user.is_authenticated %}
-                Привет, {{ user.username }}<br>
-                <a href="{% url 'user' user.username %}"> Страница профиля</a><br>
-                <a href="{% url 'logout' %}">Выйти</a>
-            {% else %}
-                <ul>
-                <li><a href="{% url 'login' %}">Зайти на сайт</a></li>
-                <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
-            </ul>
-        {% endif %}
-    {% endblock sideblock %}
-    {% endblock
+    <article>
+    {{ blog.text }}<br>
+        <a href="{% url 'aas:user' blog.owner %}">{{ blog.owner }}</a>
+    </article>
+    <h3>Комментарии</h3>
+    {% for comment in comments %}
+        <a name="comment-{{ comment.id }}"></a>
+        <div class="row" id="{{ comment.id }}">
+            <div class="col-md-{{ comment.get_col }} col-md-offset-{{ comment.get_offset }}">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>{{ comment.owner.get_full_name|default:comment.owner.username }}</strong>&nbsp;&nbsp;
+                        {{ comment.pub_date }}
+                        <a href="#comment-{{ comment.id }}">#</a>
+                    </div>
 
-
-</body>
-</html>
-
-форма для блога
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
     {% if form %}
-        <h3 id="write_text"><a onclick="return show_form('write_text')">Написать текст</a></h3>
-        <form id="blog_form", action="{% url 'aas:add_articles' blog.id %}" method="post">
+        <h3 id="write_comment"><a onclick="return show_comments_form('write_comment')">Написать комментарий</a></h3>
+        <form id="comment_form" action="{% url 'aas:add_comment' user.username blog.id %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
-            <button type="submit", class="btn btn-primary">{% bootstrap_icon 'text' %}&nbsp;&nbsp; Написать</button>
+            <button type="submit" class="btn btn-primary">{% bootstrap_icon "comment" %}&nbsp;&nbsp;Комментировать</button>
         {% endbuttons %}
         </form>
-
+    {% else %}
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title">Комментарии</h3>
+            </div>
+            <div class="panel-body">
+                Только авторизованные пользователи могут оставлять комментарии.<br />
+            </div>
+        </div>
     {% endif %}
+    {% for comment in comments %}
+        <a href="{% url 'aas:comments' blog.owner blog.id %}">{{ comment.content }}</a>
+    {% empty %}
+        <div>Еще нет ни одного комментария</div>
+    {% endfor %}
 
-форма для
+{% endblock %}

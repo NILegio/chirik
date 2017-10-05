@@ -1,7 +1,4 @@
-from django.views.generic.base import View
-from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.admin import UserAdmin
 from django import forms
 from aas.models import Character, Blog
 
@@ -20,18 +17,17 @@ class MyUserCreationForm(UserCreationForm):
     )
 
     password2 = forms.CharField(
-        label="Confirm",
+        label="Потвердить",
         max_length=32,
         required=True,
         widget=forms.PasswordInput,
-        help_text='Make sure they match'
+        help_text='Убедитесь, что они совпадают'
     )
-
 
     class Meta():
         model = Character
         fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
-        help_texts = {'password': "Must be at least 8 characters."}
+        #help_texts = {'password1': "Must be at least 8 characters."}
 
 
 def clean_username(self):
@@ -43,29 +39,20 @@ def clean_username(self):
     raise forms.ValidationError(self.error_messages['duplicate_username'])
 
 
+class BlogForm(forms.Form):
 
-
-class BlogForm(forms.ModelForm):
-
-    parent = forms.IntegerField(
-        widget=forms.HiddenInput,
-        required=False
+    blog_area = forms.CharField(
+        label="",
+        widget=forms.Textarea
     )
 
-    class Meta:
-        model = Blog
-        fields = ['text']
-
-
-
 class CommentForm(forms.Form):
+#    parent_comment = forms.IntegerField(
+#        widget=forms.HiddenInput,
+#        required=False
+#    )
 
-     parent_comment = forms.IntegerField(
-         widget=forms.HiddenInput,
-         required=False
-     )
-
-     comment_area = forms.CharField(
-        label='',
+    comment_area = forms.CharField(
+        label="",
         widget=forms.Textarea
-     )
+    )
