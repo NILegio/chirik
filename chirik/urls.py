@@ -13,18 +13,28 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include, handler404
+from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.views.static import serve
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+
 from aas.views import IndexView, LogoutView, LoginView, RegView
-from aas.views import UserView, UserEditView, BlogView, ArticlesView
+
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
-    url(r'^(?P<username>[-\w]+)/', include ('aas.urls')),
+    url(r'^(?P<username>[-\w]+)/', include('aas.urls')),
+
     #url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
     #url(r'^^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name='user_edit'),
     #url(r'^^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog'),

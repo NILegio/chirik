@@ -1,8 +1,10 @@
 {% load bootstrap3 %}
 {% block right_sideblock %}
+    {% if user.is_authenticated %}
     {% for man in people %}
         <div><a href="{% url 'aas:user' man.username %}">{{ man.username }}</a></div> {# #}
         {# {{ man.username }} #}
     {% endfor %}
+    {% endif %}
 
 {% endblock %}

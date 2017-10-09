@@ -4,27 +4,28 @@
 {% endblock %}
 
 {% block content %}
-
     {% include 'blog.html' %}
+{% endblock %}
 
-    {#  <a href="{% url 'aas:blog' username=object.username %}"> Блог </a><br> #}
-     {% block sideblock %}
-        <h2>{{ object.first_name }} {{ object.last_name }}</h2>
-        <div>username - {{ object.username }}</div>
-        <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
-         <span class="spacing">{{ object.friends.all.count }} Following</span>
-         <span class="spacing">{{ object.friends_by.all.count }} Followers</span>
-         {% if not follow %}
-             <form action="{% url 'aas:follow' username=object.username %}" method="post">
+{% block sideblock %}
+    <h2>{{ object.first_name }} {{ object.last_name }}</h2>
+    <div>@{{ object.username }}</div>
+    <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
+    <span class="spacing">{{ object.friends.all.count }} Following</span>
+    <span class="spacing">{{ object.friends_by.all.count }} Followers</span>
+
+    user {{ user.username }} object {{ object.username }} quary {{ follow }}
+    {% if user.is_authenticated %}
+        {% if not follow %}
+            <form action="{% url 'aas:follow' username=object.username %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Follow">
             </form>
-            {% endif %}
-
-        {% if user.is_authenticated and user.username == object.username %}
-        <div><a class="btn btn-default" href="{% url 'aas:user_edit' username=object.username %}">Редактировать</a></div>
         {% endif %}
-     {% endblock sideblock %}
+    {% endif %}
 
-{% endblock %}
+    {% if user.is_authenticated and user.username == object.username %}
+        <div><a class="btn btn-default" href="{% url 'aas:user_edit' username=object.username %}">Редактировать</a></div>
+    {% endif %}
+{% endblock sideblock %}
 

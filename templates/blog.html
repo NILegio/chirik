@@ -1,22 +1,30 @@
 {% load bootstrap3 %}
 
-
-    <ul>
-        {% for blog in blogs %}
-            <li>
-                <a href="{% url 'aas:comments' blog.owner blog.id %}">{{ blog.text }}</a><br>
-                {{ blog.owner }} {{ blog.pub_date|timesince }}
-            </li>
-        {% empty %}
-            <div>Вы еще ничего не написали и не на кого не подписаны</div>
-        {% endfor %}
-    </ul>
-        {% if form %}
-        <form action="{% url 'aas:add_writer' user.username %}" method="post">
+{% if form %}
+    <form action="{% url 'aas:add_writer' user.username %}" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">{% bootstrap_icon "comment" %}&nbsp;&nbsp;Написать</button>
         {% endbuttons %}
-        </form>
-        {% endif %}
+    </form>
+    <hr>
+{% endif %}
+
+
+    {% for blog in blogs %}
+        <div class="panel panel-default">
+        <div class="panel-heading">
+        <a href="{% url 'aas:user' blog.owner %}">{{ blog.owner }}</a>
+        @{{ blog.owner }}
+            *<a href="{% url 'aas:comments' blog.owner blog.id %}">{{ blog.pub_date|timesince }}</a><br></div>
+            <div class="panel-body"><p>{{ blog.text }}</p></div>
+        </div>
+
+
+    {% empty %}
+        <div>Здесь пока пусто.</div>
+    {% endfor %}
+</ul>
+
+

@@ -9,3 +9,5 @@ This is my first server.
 
 
 список не друзей един для всех переходов
+
+diplay inline block

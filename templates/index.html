@@ -11,25 +11,19 @@
     <script src="{% bootstrap_jquery_url %}"></script>
     {% bootstrap_javascript %}
     {% bootstrap_css %}
-    <link href="{% static 'bootbootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
     {% block head %}
     <title>Чирик</title>
     {% endblock %}
 </head>
 <body>
+<div class="header">
+    <h1 align="right"><a href="{% url 'index' %}">Чирик</a></h1>
+</div>
+<div class="article">
+<div class="block detail">
+{% block sideblock %}
 
-
-<div class="panel right"><h1><a href="{% url 'index' %}">Чирик</a></h1></div>
-
-{% block content %}
-    {% block page %}
-        {% if user.is_authenticated %}
-            {% include 'blog.html' %}
-        {% endif %}
-
-    {% endblock page %}
-    {% block sideblock %}
         {% if user.is_authenticated %}
             Привет, {{ user.username }}<br>
             <a href="{% url 'aas:user' user.username %}"> Страница профиля</a><br>
@@ -40,12 +34,27 @@
                 <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
             </ul>
         {% endif %}
-    {% endblock sideblock %}
+
+{% endblock sideblock %}
+ </div>
+<div class="block content">
+{% block content %}
+
+        {% if user.is_authenticated %}
+            {% include 'blog.html' %}
+        {% endif %}
 
 {% endblock %}
-    {% block right_sideblock %}
-        <div>{% include 'friends.html' %}</div>
-    {% endblock right_sideblock %}
+</div>
+<div class="block list">
+{% block right_sideblock %}
+    {% include 'friends.html' %}
+{% endblock right_sideblock %}
+</div>
+</div>
+<footer>
+    &copy; Чирик, Тестовый проект
+</footer>
 
-</body>
+    </body>
 </html>
