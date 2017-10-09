@@ -1,5 +1,9 @@
+{% load static %}
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -7,6 +11,8 @@
     <script src="{% bootstrap_jquery_url %}"></script>
     {% bootstrap_javascript %}
     {% bootstrap_css %}
+    <link href="{% static 'bootbootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+
     {% block head %}
     <title>Чирик</title>
     {% endblock %}
@@ -14,7 +20,7 @@
 <body>
 
 
-<div class="panel right"><a href="{% url 'index' %}">Чирик</a></div>
+<div class="panel right"><h1><a href="{% url 'index' %}">Чирик</a></h1></div>
 
 {% block content %}
     {% block page %}
