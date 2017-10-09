@@ -1,17 +1,15 @@
 {% load bootstrap3 %}
-{% block content %}
+
 
     <ul>
         {% for blog in blogs %}
             <li>
                 <a href="{% url 'aas:comments' blog.owner blog.id %}">{{ blog.text }}</a><br>
-                {{ blog.owner }}
-
+                {{ blog.owner }} {{ blog.pub_date|timesince }}
             </li>
         {% empty %}
             <div>Вы еще ничего не написали и не на кого не подписаны</div>
         {% endfor %}
-
     </ul>
         {% if form %}
         <form action="{% url 'aas:add_writer' user.username %}" method="post">
@@ -22,4 +20,3 @@
         {% endbuttons %}
         </form>
         {% endif %}
-{% endblock %}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     {% load bootstrap3 %}
     <script src="{% bootstrap_jquery_url %}"></script>
@@ -13,25 +14,32 @@
 <body>
 
 
-<div><a href="{% url 'index' %}">Чирик</a></div>
+<div class="panel right"><a href="{% url 'index' %}">Чирик</a></div>
 
 {% block content %}
     {% block page %}
+        {% if user.is_authenticated %}
+            {% include 'blog.html' %}
+        {% endif %}
+
     {% endblock page %}
     {% block sideblock %}
-            {% if user.is_authenticated %}
-                Привет, {{ user.username }}<br>
-                <a href="{% url 'aas:user' user.username %}"> Страница профиля</a><br>
-                <a href="{% url 'logout' %}">Выйти</a>
-            {% else %}
-                <ul>
+        {% if user.is_authenticated %}
+            Привет, {{ user.username }}<br>
+            <a href="{% url 'aas:user' user.username %}"> Страница профиля</a><br>
+            <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+            <ul>
                 <li><a href="{% url 'login' %}">Зайти на сайт</a></li>
                 <li><a href="{% url 'reg' %}">Зарегестриоватся</a></li>
             </ul>
         {% endif %}
     {% endblock sideblock %}
-    {% endblock %}
 
+{% endblock %}
+    {% block right_sideblock %}
+        <div>{% include 'friends.html' %}</div>
+    {% endblock right_sideblock %}
 
 </body>
 </html>

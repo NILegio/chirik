@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
-    url(r'^(?P<username>\w+)/', include ('aas.urls')),
+    url(r'^(?P<username>[-\w]+)/', include ('aas.urls')),
     #url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
     #url(r'^^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name='user_edit'),
     #url(r'^^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog'),

@@ -6,7 +6,7 @@ from django.urls import reverse
 
 
 class Character(AbstractUser):
-    friends = models.ManyToManyField('self', related_name='friends', blank=True)
+    friends = models.ManyToManyField('self', related_name='friends_by', symmetrical=False, blank=True)#related_name='friends'
 
     class Meta:
         verbose_name = 'character'

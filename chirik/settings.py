@@ -24,6 +24,7 @@ SECRET_KEY = 'qk5bmgx+*$&fxki=o5%c7#zo8-n+&^j1mm%g)ew&zqgogb84zl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+    #DEBUG =False
 
 ALLOWED_HOSTS = ['wtelecom.pythonanywhere.com', '127.0.0.1']
 

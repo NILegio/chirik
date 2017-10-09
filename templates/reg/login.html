@@ -4,11 +4,9 @@
     <form action="" method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
-    {# {{ form.as_p }} #}
-    {% buttons %}
-        <button type="submit">
-        {% bootstrap_icon 'star' %} Войти</button>
-    {% endbuttons %}
+        {% buttons %}
+        <button type="submit" class="btn btn-primary">Войти</button>
+        {% endbuttons %}
     </form>
 {% endblock %}
 

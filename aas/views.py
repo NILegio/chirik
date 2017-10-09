@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
@@ -21,6 +21,25 @@ from aas.form import BlogForm, CommentForm, MyUserChangeForm, MyUserCreationForm
 
 class IndexView(TemplateView):
     template_name = 'index.html'
+    blog_form = BlogForm
+
+    def get_context_data(self, **kwargs):
+
+        context = super(IndexView, self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context.update(csrf(self.request))
+            user = auth.get_user(self.request)
+            chiriks = Blog.objects.filter(owner__username=user.username)
+            chiriks_friends = Blog.objects.filter(owner__in=user.friends.all())#its work? but how, i dont now
+            context['blogs'] = (chiriks|chiriks_friends).order_by('pub_date').reverse()
+            context['form'] = self.blog_form
+            context['people']= Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
+        return context
+
+
+
+
+
 
 
 class UserView(DetailView):
@@ -29,17 +48,22 @@ class UserView(DetailView):
     blog_form = BlogForm
 
     def get_object(self):
-        idi = self.model.objects.get(username=self.kwargs['username'])
+        #idi = get_object_or_404(username=self.kwargs['username'])
+        try:
+            idi = self.model.objects.get(username=self.kwargs['username'])
+        except Character.DoesNotExist:
+            raise Http404
         return self.model.objects.get(pk = idi.pk)
 
     def get_context_data(self, **kwargs):
-
         context = super(DetailView, self).get_context_data(**kwargs)
         context.update(csrf(self.request))
         user = auth.get_user(self.request)
         char = get_object_or_404(Character, username=self.kwargs['username'])
-        context['blogs'] = char.blog.all().order_by('pub_date')
-        if user.is_authenticated:
+        context['blogs'] = (char.blog.all()).order_by('pub_date').reverse()
+        context['people'] = Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
+        context['follow'] = char.friends.filter(username=user.username)
+        if user.is_authenticated and user.username == char.username:
             context['form'] = self.blog_form
         return context
 
@@ -73,24 +97,6 @@ class BlogView(TemplateView):
         return context
 
 
-@login_required
-@require_http_methods(["POST"])
-def add_writing(request, username):
-    form = BlogForm(request.POST)
-    character = get_object_or_404(Character, username=username)
-
-    if form.is_valid():
-        writing = Blog()
-        writing.owner = auth.get_user(request)
-        writing.text = form.cleaned_data['blog_area']
-        writing.save()
-
-    return redirect(character.get_absolute_url())
-
-
-
-
-
 class ArticlesView(TemplateView):
 
     template_name = 'comments.html'
@@ -108,29 +114,7 @@ class ArticlesView(TemplateView):
             context['form'] = self.comment_form
         return context
 
-@login_required
-@require_http_methods(["POST"])
-def add_comment(request, username, id):
-    form = CommentForm(request.POST)
-    blog = get_object_or_404(Blog, id=id)
 
-    if form.is_valid():
-        comment = Commentary()
-        comment.path = []
-        comment.blog = blog
-        comment.owner = auth.get_user(request)
-        comment.content = form.cleaned_data['comment_area']
-        comment.save()
-
-#    try:
-#        comment.path.extend(Commentary.objects.get(id=form.cleaned_data['parent_comment']).path)
-#        comment.path.append(comment.id)
-#    except ObjectDoesNotExist:
-#        comment.path.append(comment.id)
-
-#    comment.save()
-
-    return redirect(blog.get_absolute_url())
 
 
 class HashView(ListView):
@@ -139,9 +123,15 @@ class HashView(ListView):
 
 
 class FriendsView(ListView):
-
-    pass
-
+    template_name = 'friends.html'
+    model = Character
+    def get_context_data(self, **kwargs):
+        context = super(FriendsView, self).get_context_data(**kwargs)
+        char = get_object_or_404(Character, username=self.kwargs['username'])
+        context['people'] = Character.objects.exclude(friends_by=char.id).exclude(username=char.username)
+        #
+        # Character.objects.exclude(username=char.username).exclude()
+        return context
 
 class RegView(FormView):
     template_name = 'reg/registration.html'
@@ -169,3 +159,51 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return HttpResponseRedirect('/')
+
+
+@login_required
+@require_http_methods(["POST"])
+def add_writing(request, username):
+    form = BlogForm(request.POST)
+    character = get_object_or_404(Character, username=username)
+
+    if form.is_valid():
+        writing = Blog()
+        writing.owner = auth.get_user(request)
+        writing.text = form.cleaned_data['blog_area']
+        writing.save()
+
+    return redirect(character.get_absolute_url())
+
+@login_required
+@require_http_methods(["POST"])
+def add_comment(request, username, id):
+    form = CommentForm(request.POST)
+    blog = get_object_or_404(Blog, id=id)
+
+    if form.is_valid():
+        comment = Commentary()
+        comment.path = []
+        comment.blog = blog
+        comment.owner = auth.get_user(request)
+        comment.content = form.cleaned_data['comment_area']
+        comment.save()
+
+#    try:
+#        comment.path.extend(Commentary.objects.get(id=form.cleaned_data['parent_comment']).path)
+#        comment.path.append(comment.id)
+#    except ObjectDoesNotExist:
+#        comment.path.append(comment.id)
+
+#    comment.save()
+
+    return redirect(blog.get_absolute_url())
+
+@login_required
+@require_http_methods(["POST"])
+def follow(request, username):
+    user = auth.get_user(request)
+    follower = Character.objects.get(username=username)
+    user.friends.add(follower)
+    return redirect('/')#если в качестве редиректа использовать absolute url, то выведет на
+    # страницу вхожденного и могут быть глюки
