@@ -8,10 +8,14 @@ from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.views.decorators.http import require_http_methods
 from django.template.context_processors import csrf
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render_to_response
 from django.urls import reverse_lazy
+from django.template import RequestContext
+from django.http import HttpResponseNotFound
+
 from .models import Character, Blog, Commentary, HashtagList
 from aas.form import BlogForm, CommentForm, MyUserCreationForm
+
 
 
 class IndexView(TemplateView):
@@ -187,3 +191,10 @@ def follow(request, username):
     follower = Character.objects.get(username=username)
     user.friends.add(follower)
     return redirect('/')
+
+
+def curry(_curried_func, *args, **kwargs):
+    def _curried(*moreargs, **morekwargs):
+        return _curried_func(*(args + moreargs), **dict(kwargs, **morekwargs))
+    return _curried
+

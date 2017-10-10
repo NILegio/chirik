@@ -17,10 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.static import serve
 from django.conf import settings
+from django.views.defaults import server_error, page_not_found
 
-from aas.views import IndexView, LogoutView, LoginView, RegView
+from aas.views import IndexView, LogoutView, LoginView, RegView, curry
 
-
+handler404 = curry(page_not_found, exception=Exception('Page not Found'), template_name='errors/error404.html')
+handler500 = curry(server_error, template_name='errors/error500.html')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -33,3 +35,4 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^(?P<username>[-\w]+)/', include('aas.urls')),
 ]
+

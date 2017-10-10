@@ -13,8 +13,6 @@
     <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
     <span class="spacing">{{ object.friends.all.count }} Following</span>
     <span class="spacing">{{ object.friends_by.all.count }} Followers</span>
-
-    user {{ user.username }} object {{ object.username }} quary {{ follow }}
     {% if user.is_authenticated %}
         {% if not follow %}
             <form action="{% url 'aas:follow' username=object.username %}" method="post">
