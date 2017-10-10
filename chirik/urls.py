@@ -14,10 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.static import serve
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 
 from aas.views import IndexView, LogoutView, LoginView, RegView
@@ -34,9 +32,4 @@ urlpatterns = [
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^(?P<username>[-\w]+)/', include('aas.urls')),
-
-    #url(r'^(?P<username>\w+)/$', UserView.as_view(), name='user'),
-    #url(r'^^(?P<username>\w+)/edit_user/$', UserEditView.as_view(), name='user_edit'),
-    #url(r'^^(?P<username>\w+)/blog/$', BlogView.as_view(), name='blog'),
-    #url(r'^^(?P<username>\w+)/blog/(?P<id>\d+)/$', ArticlesView.as_view(), name='comments'),
 ]

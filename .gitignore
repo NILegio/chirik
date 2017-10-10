@@ -107,4 +107,6 @@ ENV/
 .idea/
 
 blank.py
+draft_old
+templates/draft.html
 

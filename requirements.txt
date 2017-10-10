@@ -1,5 +1,4 @@
 django==1.11.5
-psycopg2==2.7.3.1
 django-bootstrap3
 
 

@@ -44,7 +44,6 @@ class Blog(models.Model):
 
 
 class Commentary(models.Model):
-    path = ArrayField(models.IntegerField())
     blog = models.ForeignKey(Blog, related_name='commentary')
     content = models.TextField(max_length=280)
     pub_date = models.DateTimeField(auto_now=True)

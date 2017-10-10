@@ -7,15 +7,11 @@ from django.views.generic import TemplateView, ListView, DetailView, UpdateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.views.decorators.http import require_http_methods
-from django.template import RequestContext
 from django.template.context_processors import csrf
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from .models import Character, Blog, Commentary, HashtagList
-from aas.form import BlogForm, CommentForm, MyUserChangeForm, MyUserCreationForm
-
-
-# Create your views here.
+from aas.form import BlogForm, CommentForm, MyUserCreationForm
 
 
 class IndexView(TemplateView):
@@ -29,10 +25,10 @@ class IndexView(TemplateView):
             context.update(csrf(self.request))
             user = auth.get_user(self.request)
             chiriks = Blog.objects.filter(owner__username=user.username)
-            chiriks_friends = Blog.objects.filter(owner__in=user.friends.all())#its work? but how, i dont now
-            context['blogs'] = (chiriks|chiriks_friends).order_by('pub_date').reverse()[:10]
+            chiriks_friends = Blog.objects.filter(owner__in=user.friends.all())
+            context['blogs'] = (chiriks | chiriks_friends).order_by('pub_date').reverse()[:10]
             context['form'] = self.blog_form
-            context['people']= Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
+            context['people'] = Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
         return context
 
 
@@ -42,12 +38,11 @@ class UserView(DetailView):
     blog_form = BlogForm
 
     def get_object(self):
-        #idi = get_object_or_404(username=self.kwargs['username'])
         try:
             idi = self.model.objects.get(username=self.kwargs['username'])
         except Character.DoesNotExist:
             raise Http404
-        return self.model.objects.get(pk = idi.pk)
+        return self.model.objects.get(pk=idi.pk)
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -58,7 +53,7 @@ class UserView(DetailView):
         context['people'] = Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
         context['follow'] = char.friends_by.filter(username=user.username)
         if user.username == char.username:
-            context['follow'] = 'blank' # позорище
+            context['follow'] = 'blank'  # позорище
 
         if user.is_authenticated and user.username == char.username:
             context['form'] = self.blog_form
@@ -84,13 +79,11 @@ class UserEditView(UpdateView):
         context['people'] = Character.objects.exclude(friends_by=user.id).exclude(username=user.username)
         context['follow'] = char.friends_by.filter(username=user.username)
         if user.username == char.username:
-            context['follow'] = 'blank' # позорище
+            context['follow'] = 'blank'  # позорище
         return context
-
 
     def get_success_url(self):
         return reverse_lazy('aas:user', args=[str(self.kwargs['username'])])
-        #return reverse_lazy('user', args=[str(self.kwargs['username'])])
 
 
 class ArticlesView(TemplateView):
@@ -104,7 +97,7 @@ class ArticlesView(TemplateView):
         user = auth.get_user(self.request)
         context.update(csrf(self.request))
         context['blog'] = blog
-        context['comments'] = blog.commentary.all().order_by('path')
+        context['comments'] = blog.commentary.all().order_by('id')
         context['next'] = blog.get_absolute_url()
         if user.is_authenticated:
             context['form'] = self.comment_form
@@ -119,6 +112,7 @@ class HashView(ListView):
 class FriendsView(ListView):
     template_name = 'friends.html'
     model = Character
+
     def get_context_data(self, **kwargs):
         context = super(FriendsView, self).get_context_data(**kwargs)
         char = get_object_or_404(Character, username=self.kwargs['username'])
@@ -142,14 +136,15 @@ class LoginView(FormView):
     success_url = '/'
 
     def form_valid(self, form):
-        self.user = form.get_user()
-        login(self.request, self.user)
+        user = form.get_user()
+        login(self.request, user)
         return super(LoginView, self).form_valid(form)
 
 
 class LogoutView(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         logout(request)
         return HttpResponseRedirect('/')
 
@@ -168,6 +163,7 @@ def add_writing(request, username):
 
     return redirect(character.get_absolute_url())
 
+
 @login_required
 @require_http_methods(["POST"])
 def add_comment(request, username, id):
@@ -181,16 +177,8 @@ def add_comment(request, username, id):
         comment.owner = auth.get_user(request)
         comment.content = form.cleaned_data['comment_area']
         comment.save()
-
-#    try:
-#        comment.path.extend(Commentary.objects.get(id=form.cleaned_data['parent_comment']).path)
-#        comment.path.append(comment.id)
-#    except ObjectDoesNotExist:
-#        comment.path.append(comment.id)
-
-#    comment.save()
-
     return redirect(blog.get_absolute_url())
+
 
 @login_required
 @require_http_methods(["POST"])
