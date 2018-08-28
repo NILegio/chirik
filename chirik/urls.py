@@ -19,7 +19,7 @@ from django.views.static import serve
 from django.conf import settings
 from django.views.defaults import server_error, page_not_found
 
-from aas.views import IndexView, LogoutView, LoginView, RegView, curry
+from aas.views import IndexView, LogoutView, LoginView, RegView, HashView, curry
 
 handler404 = curry(page_not_found, exception=Exception('Page not Found'), template_name='errors/error404.html')
 handler500 = curry(server_error, template_name='errors/error500.html')
@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^registration/$', RegView.as_view(), name='reg'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
+    url(r'^hashtag/(?P<hashtag>\w+)/$', HashView.as_view(), name='hashtag'),
+
     url(r'^(?P<username>[-\w]+)/', include('aas.urls')),
 ]
 

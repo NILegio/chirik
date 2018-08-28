@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse
+from precise_bbcode.fields import BBCodeTextField
+from django.utils.safestring import mark_safe
 # Create your models here.
 
 
@@ -22,7 +24,7 @@ class Character(AbstractUser):
 class HashtagList(models.Model):
     hashtag = models.TextField(max_length=50, unique=True)
     popularity = models.IntegerField(default=0, blank=True)
-    change_time = models.DateField(auto_now_add=True, blank=True)
+    change_time = models.DateField(auto_now=True)
 
     def __str__(self):
         return "{}".format(self.hashtag)
@@ -31,10 +33,9 @@ class HashtagList(models.Model):
 class Blog(models.Model):
     owner = models.ForeignKey(Character, related_name='blog')
     pub_date = models.DateTimeField(auto_now=True)
-    text = models.TextField(max_length=280)
+    text = BBCodeTextField(max_length=280)
     hashtag_b = models.ManyToManyField(HashtagList, blank=True)
     dislikes = models.IntegerField(default=100)
-
 
     def __str__(self):
         return '{} {}'.format(self.owner.username, self.pub_date)
@@ -44,6 +45,7 @@ class Blog(models.Model):
 
 
 class Commentary(models.Model):
+    #path = ArrayField(models.IntegerField())
     blog = models.ForeignKey(Blog, related_name='commentary')
     content = models.TextField(max_length=280)
     pub_date = models.DateTimeField(auto_now=True)

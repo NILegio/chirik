@@ -1,4 +1,9 @@
 {% extends "index.html" %}
+
+{% load bootstrap3 %}
+<script src="{% bootstrap_jquery_url %}"></script>
+
+
 {% block head %}
     <title>{{ object.first_name }} {{ object.last_name }} (@{{ object.username }})|Чирик</title>
 {% endblock %}
@@ -11,19 +16,32 @@
     <h2>{{ object.first_name }} {{ object.last_name }}</h2>
     <div>@{{ object.username }}</div>
     <div>Дата регистрация - {{ object.date_joined|date:'F Y' }} </div>
-    <span class="spacing">{{ object.friends.all.count }} Following</span>
-    <span class="spacing">{{ object.friends_by.all.count }} Followers</span>
-    {% if user.is_authenticated %}
-        {% if not follow %}
-            <form action="{% url 'aas:follow' username=object.username %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="Follow">
-            </form>
-        {% endif %}
-    {% endif %}
+
+{% comment %}    <span class="spacing">{{ object.friends.all.count }} Following</span>
+    <span class="spacing">{{ object.friends_by.all.count }} Followers</span>{% endcomment %}
+    {# {% if user.is_authenticated %} #}
+
+
+
+    <div data-id="{{ object.id }}" data-username={{ object.username }} data-action="follow" title="Читать">
+        <span class="glyphicon glyphicon-star"></span>
+        <span data-count="following">{{ object.friends.all.count }} Following</span>
+        <span data-count="followers">{{ object.friends_by.all.count }} Followers</span>
+    </div>
+
+
+{#    <form action="{% url 'aas:follow' username=object.username %}" method="post">#}
+{#        {% csrf_token %}#}
+{#        <input type="submit" value="Follow">#}
+{#    </form>#}
+
+    {# {% endif %} #}
 
     {% if user.is_authenticated and user.username == object.username %}
         <div><a class="btn btn-default" href="{% url 'aas:user_edit' username=object.username %}">Редактировать</a></div>
     {% endif %}
+
 {% endblock sideblock %}
+
+
 

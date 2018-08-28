@@ -1,6 +1,9 @@
 {% extends 'user.html' %}
 {% load bootstrap3 %}
+{% load bbcode_tags %}
+
 {% block head %}
+
     <title>{{ blog.owner.first_name }} {{ blog.owner.last_name }} пишет: {{ blog.text }}|Чирик</title>
 {% endblock %}
 
@@ -9,12 +12,13 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <a href="{% url 'aas:user' blog.owner %}">{{ blog.owner }}</a>
             @{{ blog.owner }}*{{ blog.pub_date|timesince }}</div>
                 <div class="panel-body">
-                    {{ blog.text }}
+                    {{ blog.text.rendered }}
                 </div>
     </div>
 

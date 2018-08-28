@@ -1,4 +1,6 @@
 {% load bootstrap3 %}
+{% load bbcode_tags %}
+
 
 {% if form %}
     <form action="{% url 'aas:add_writer' user.username %}" method="post">
@@ -18,13 +20,33 @@
         <a href="{% url 'aas:user' blog.owner %}">{{ blog.owner }}</a>
         @{{ blog.owner }}
             *<a href="{% url 'aas:comments' blog.owner blog.id %}">{{ blog.pub_date|timesince }}</a><br></div>
-            <div class="panel-body"><p>{{ blog.text }}</p></div>
+            <div class="panel-body"><p>  {{ blog.text.rendered }}
+
+
+            </p></div>
         </div>
 
 
     {% empty %}
         <div>Здесь пока пусто.</div>
     {% endfor %}
-</ul>
+
+
+<div class="pagination">
+    <span class = 'step-links'>
+        {% if blogs.has_previous %}
+            <a href="?page={{ blogs.previous_page_number }}">previous</a>
+        {% endif %}
+
+    <span class="current">
+        Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}
+    </span>
+    {% if blogs.has_next %}
+        <a href="?page={{ blogs.next_page_number }}">next</a>
+    {% endif %}
+     </span>
+</div>
+
+
 
 
